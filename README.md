@@ -18,14 +18,14 @@ Add this to your project's Claude Code memory (MEMORY.md or CLAUDE.md), adjustin
 ## Agent Team (swarm)
 Cuando el usuario diga "team-lead <issues>", leé `<path-to>/agent-teams/agent-team.md` y ejecutá el flujo descrito ahí.
 Flujo: team lead + coder + reviewer + senior-reviewer.
-Se invoca con issue numbers como argumento (ej: `team-lead #96` o `team-lead #96 #49 --auto-merge`).
+Se invoca con issue numbers como argumento (ej: `team-lead #<issue-number>` o `team-lead #<issue> #<issue> --auto-merge`).
 ```
 
 Then invoke from any Claude Code session:
 
 ```
-team-lead #96
-team-lead #96 #49 --auto-merge
+team-lead #<issue-number>
+team-lead #<issue> #<issue> --auto-merge
 ```
 
 ## Files
