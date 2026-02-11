@@ -222,7 +222,60 @@ Do NOT print the report as text — ALWAYS use SendMessage.
 
 **Same loop as step 6 (kill + respawn) but with the senior-reviewer.** After each senior-reviewer review, kill them and spawn a new one with the previous findings as context + instructions to do a full review. **If it exceeds 3 iterations, ask the user whether to continue or hand off to human review.**
 
-### Step 8 — Merge
+### Step 8 — Final review (cold, generic)
+
+After the senior-reviewer approved with 0 findings, spawn a **final-reviewer** with `Task` (with `team_name`). This is a completely fresh review with NO scope restrictions — it catches edge cases, race conditions, and improvements that scoped reviewers miss.
+
+```
+Review PR #X using /pr-review.
+
+This PR already passed a functional review and a consistency review, both with 0 findings.
+
+Do a COMPLETE review with fresh eyes — NO scope restrictions. Focus on what previous reviewers might have missed:
+- Race conditions and concurrency edge cases
+- UX on unusual viewports (short screens, mobile landscape, split view)
+- Performance issues and unnecessary complexity
+- Code simplification opportunities
+- Missing error handling at system boundaries
+
+Classify EACH finding into one of these 3 categories — ONLY these 3, do NOT invent others:
+- Blockers
+- Recommended improvements
+- Minor suggestions
+ALL must be listed so the coder can resolve them. Do NOT use "informational", "optional", "nice to have" or any other category.
+
+IMPORTANT: When you finish your review, send your findings to the team lead using SendMessage:
+SendMessage(type="message", recipient="team-lead", content="<your full report>", summary="Final review findings PR #X")
+Do NOT print the report as text — ALWAYS use SendMessage.
+```
+
+**Same loop as step 6 (kill + respawn) but with the final-reviewer.** After each review, kill them and spawn a new one with the previous findings as context + instructions to do a full review. **If it exceeds 3 iterations, ask the user whether to continue or hand off to human review.**
+
+### Step 9 — Summary and merge
+
+**Before merging (or asking for confirmation), print a summary of the entire review process.**
+
+Track these counters as you go through steps 6-8 — do NOT reconstruct from memory at the end:
+- After each review iteration, record the finding counts (Blockers / Recommended / Minor)
+- After each stage completes, record the total iterations
+
+Print the summary in this format:
+
+```
+## Summary — Issue #<number>
+
+| Stage           | Iterations | Findings per iteration (B/R/M)     |
+|-----------------|------------|------------------------------------|
+| Reviewer        | 3          | 1/2/1 → 0/1/0 → 0                 |
+| Senior-reviewer | 1          | 0                                  |
+| Final-reviewer  | 2          | 0/2/3 → 0                          |
+
+Total findings resolved: <sum of all findings across all iterations>
+Commits: <number of commits on the branch>
+Files changed: <N files> (+<additions> -<deletions>)   ← from gh pr view --json additions,deletions,changedFiles
+```
+
+Then proceed with merge:
 
 **If `--auto-merge` was NOT passed**, ask the user for confirmation before merging. **If `--auto-merge` was passed**, merge directly without asking.
 
@@ -239,29 +292,30 @@ git checkout staging && git pull origin staging
 | Coder | YES | YES (pytest + vitest) | **NO (NONE)** | YES (only `gh issue view`) |
 | Reviewer | NO | NO | NO | YES (only `gh pr view`) |
 | Senior-reviewer | NO | NO | NO | YES (only `gh pr view`) |
+| Final-reviewer | NO | NO | NO | YES (only `gh pr view`) |
 
 ## Flow summary
 
 ```
 FOR EACH ISSUE (sequential):
   Issue → Branch → Coder implements → Commit/Push/PR
-  → LOOP: Reviewer reviews → kill reviewer → Coder fixes → Commit/Push → spawn NEW reviewer with previous findings (until 0 findings)
-  → LOOP: Senior-reviewer reviews → kill senior → Coder fixes → Commit/Push → spawn NEW senior with previous findings (until 0 findings)
+  → LOOP: Reviewer reviews (functional, max 5 iter)
+  → LOOP: Senior-reviewer reviews (consistency, max 3 iter)
+  → LOOP: Final-reviewer reviews (cold/generic, no scope restrictions, max 3 iter)
   → User confirmation → Merge → pull staging
   → Next issue (if more)
 ```
 
-## Cross-cutting rules — audit report
+## Project-specific rules
 
-If the change resolves a finding in `docs/codebase-audit-2026-02-09.md` (C/I/M), the coder should mark it with ~~strikethrough~~ and `RESOLVED`, and update the `Last updated` field in the header.
+Read the `## Agent Team` section in the project's `CLAUDE.md`. If it exists, it contains per-role instructions:
 
-**Test metrics (counters, coverage, ratchets) are NOT updated manually.** Run `scripts/update-test-metrics.sh` after merging to update all doc files automatically.
+- `### all` — rules that apply to **every** teammate. Inject into every prompt.
+- `### coder` — additional rules for the coder. Append to the coder's prompt.
+- `### reviewer` — additional review criteria for the reviewer. Append to the reviewer's prompt.
+- `### senior-reviewer` — additional review criteria for the senior-reviewer. Append to the senior-reviewer's prompt.
 
-### Cross-cutting review criteria
-
-ALWAYS include in the reviewer and senior-reviewer criteria:
-- That there are no audit report findings that should be marked as resolved but weren't
-- That the `Last updated` field of the audit report is updated with date and context
+If the `## Agent Team` section does not exist in `CLAUDE.md`, skip — no project-specific rules apply.
 
 ## General rules
 
