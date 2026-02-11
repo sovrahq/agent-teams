@@ -7,24 +7,25 @@ Reusable agent team definitions for coordinating Claude Code sessions across pro
 Clone this repo alongside your projects:
 
 ```bash
-cd ~/Documents/2.\ Work
 git clone git@github.com:sovrahq/agent-teams.git
 ```
 
 ## Usage
 
-Add this to your project's Claude Code memory (MEMORY.md or CLAUDE.md):
+Add this to your project's Claude Code memory (MEMORY.md or CLAUDE.md), adjusting the path to where you cloned the repo:
 
 ```
 ## Agent Team (swarm)
-Cuando el usuario diga "team-lead <issues>", leé `~/Documents/2. Work/agent-teams/agent-team.md` y ejecutá el flujo descrito ahí.
+Cuando el usuario diga "team-lead <issues>", leé `<path-to>/agent-teams/agent-team.md` y ejecutá el flujo descrito ahí.
+Flujo: team lead + coder + reviewer + senior-reviewer.
+Se invoca con issue numbers como argumento (ej: `team-lead #96` o `team-lead #96 #49 --auto-merge`).
 ```
 
 Then invoke from any Claude Code session:
 
 ```
-team-lead 96
-team-lead 96 49 --auto-merge
+team-lead #96
+team-lead #96 #49 --auto-merge
 ```
 
 ## Files
