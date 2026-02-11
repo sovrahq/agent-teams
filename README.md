@@ -83,3 +83,16 @@ When multiple issues are provided, they are processed **sequentially**. Each iss
 | File | Description |
 |------|-------------|
 | `agent-team.md` | Full workflow definition with all rules, review loops, permissions, and doc update requirements |
+
+## Related: Skills
+
+The reviewer and senior-reviewer agents use `/pr-review`, a custom Claude Code skill defined in a separate repo:
+
+- **Repo**: [fernandezdiegoh/df-claude-skills](https://github.com/fernandezdiegoh/df-claude-skills)
+- **Skills used by agent-team**: `pr-review`, `codebase-audit`
+
+Clone it alongside this repo for local access:
+
+```bash
+git clone git@github.com:fernandezdiegoh/df-claude-skills.git
+```
