@@ -105,7 +105,7 @@ RULES:
 ### Step 3 — WAIT for the coder
 
 **Do NOT do anything until the coder confirms they're done and tests pass.**
-Don't touch git. Just wait.
+Print a status line (e.g., `Waiting for the coder to finish implementation...`) and STOP. Do not use `sleep`, `echo`, or any Bash command to wait. The coder's message arrives automatically.
 
 **When the coder says they're done, verify that files exist with `ls -la <path>`.** Do NOT use Glob or git status to verify — use `ls` directly. The files ARE on disk even if other tools don't show them.
 
@@ -156,7 +156,7 @@ SendMessage(type="message", recipient="team-lead", content="<your full report>",
 Do NOT print the report as text — ALWAYS use SendMessage so the team lead receives it.
 ```
 
-**After spawning the reviewer, STOP.** Do not use `sleep`, `wait`, or any polling command. The reviewer's findings will arrive automatically as a SendMessage. Your next turn begins when that message is delivered.
+**After spawning the reviewer, print a status line** (e.g., `Reviewer spawned for PR #205. Waiting for their findings...`) **and STOP.** Do not use `sleep`, `wait`, or any Bash command. The reviewer's findings arrive automatically as a SendMessage. Your next turn begins when that message is delivered.
 
 ### Step 6 — Loop: Reviewer ↔ Coder (until approval)
 
@@ -223,6 +223,8 @@ SendMessage(type="message", recipient="team-lead", content="<your full report>",
 Do NOT print the report as text — ALWAYS use SendMessage.
 ```
 
+**After spawning the senior-reviewer, print a status line** (e.g., `Senior-reviewer spawned for PR #205. Waiting for their findings...`) **and STOP.** Do not use `sleep`, `wait`, or any Bash command. Their message arrives automatically.
+
 **Same loop as step 6 (kill + respawn) but with the senior-reviewer.** After each senior-reviewer review, kill them and spawn a new one with the previous findings as context + instructions to do a full review. **If it exceeds 3 iterations, ask the user whether to continue or hand off to human review.**
 
 ### Step 8 — Final review (cold, generic)
@@ -251,6 +253,8 @@ IMPORTANT: When you finish your review, send your findings to the team lead usin
 SendMessage(type="message", recipient="team-lead", content="<your full report>", summary="Final review findings PR #X")
 Do NOT print the report as text — ALWAYS use SendMessage.
 ```
+
+**After spawning the final-reviewer, print a status line** (e.g., `Final-reviewer spawned for PR #205. Waiting for their findings...`) **and STOP.** Do not use `sleep`, `wait`, or any Bash command. Their message arrives automatically.
 
 **Same loop as step 6 (kill + respawn) but with the final-reviewer.** After each review, kill them and spawn a new one with the previous findings as context + instructions to do a full review. **If it exceeds 3 iterations, ask the user whether to continue or hand off to human review.**
 
