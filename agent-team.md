@@ -115,6 +115,15 @@ Print a status line (e.g., `Waiting for the coder to finish implementation...`) 
 
 Only when the coder confirms they're done:
 
+**Before touching git, verify you're on the feature branch:**
+
+```bash
+current=$(git branch --show-current)
+if [[ "$current" != feature/* ]]; then echo "ERROR: on $current, expected feature/*" && exit 1; fi
+```
+
+If the check fails, switch to the correct feature branch before continuing. Do NOT commit to staging or main.
+
 ```bash
 git add <files the coder listed>
 git commit -m "<type>: <description>
@@ -171,7 +180,7 @@ The loop is:
 2. Team lead **kills the reviewer** (shutdown_request).
 3. Team lead sends the COMPLETE list of findings TO THE CODER via **SendMessage** (copy verbatim, do NOT write "see reviewer's message"). The coder does NOT have access to the reviewer's messages.
 4. Coder fixes EVERYTHING.
-5. Team lead makes a new commit and push.
+5. Team lead **verifies branch** (`git branch --show-current` must be `feature/*`), then makes a new commit and push.
 6. Team lead **spawns a NEW reviewer** and sends:
    ```
    Review PR #X using /pr-review --team.
