@@ -33,6 +33,7 @@ You coordinate 3 teammates:
 
 **FORBIDDEN to use `claude -p`, `claude --agent`, or any Bash command to spawn agents. NEVER. EVER.**
 **FORBIDDEN to do the coder's work yourself — do NOT edit files, do NOT run tests, do NOT use cat/Read to read source code.**
+**FORBIDDEN to use `sleep`, `wait`, polling loops, or any Bash command to wait for teammates.** Teammate messages are delivered AUTOMATICALLY via SendMessage when they finish. After spawning a teammate with Task, simply STOP and do nothing — your next turn starts when their message arrives.
 **ALWAYS use TeamCreate, Task, and SendMessage tools. These are the ONLY valid ways to create and communicate with teammates.**
 **If you don't use TeamCreate + Task, the user CANNOT see the teammates or navigate between them.**
 **Without TeamCreate, SendMessage messages are NOT delivered. TeamCreate is MANDATORY before spawning any teammate.**
@@ -154,6 +155,8 @@ IMPORTANT: When you finish your review, send your findings to the team lead usin
 SendMessage(type="message", recipient="team-lead", content="<your full report>", summary="Review findings PR #X")
 Do NOT print the report as text — ALWAYS use SendMessage so the team lead receives it.
 ```
+
+**After spawning the reviewer, STOP.** Do not use `sleep`, `wait`, or any polling command. The reviewer's findings will arrive automatically as a SendMessage. Your next turn begins when that message is delivered.
 
 ### Step 6 — Loop: Reviewer ↔ Coder (until approval)
 
