@@ -293,6 +293,7 @@ git clone git@github.com:fernandezdiegoh/df-claude-skills.git
 
 | Version | Changes |
 |---------|---------|
+| 2.5.1 | Fixed merge cleanup order: worktree removal before branch deletion |
 | 2.5.0 | Mandatory test re-run after reviewer fixes, rebase before merge, cleanup on failure, documented `ls` workaround |
 | 2.4.0 | Git worktrees for parallel-safe execution, all git commands via `git -C "$WORKTREE"` |
 | 2.3.0 | Renamed invocation to `agent-team`, unique branch names with random hash |

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 2.5.1
+
+- Fixed merge cleanup order: remove worktree BEFORE `gh pr merge --delete-branch` (branch deletion fails while worktree exists)
+
 ## 2.5.0
 
 - Coder must re-run tests after fixing reviewer findings before team lead commits

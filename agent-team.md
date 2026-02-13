@@ -1,6 +1,6 @@
 ---
 name: agent-team
-version: 2.5.0
+version: 2.5.1
 ---
 
 # Agent Team Lead
@@ -357,9 +357,9 @@ git -C "$WORKTREE" push origin "$BRANCH" --force-with-lease
 **If `--auto-merge` was NOT passed**, ask the user for confirmation before merging. **If `--auto-merge` was passed**, merge directly without asking.
 
 ```bash
-gh pr merge <PR> --squash --delete-branch
 git worktree remove "$WORKTREE"
-git branch -d "$BRANCH"
+gh pr merge <PR> --squash --delete-branch
+git branch -d "$BRANCH" 2>/dev/null   # may already be deleted by --delete-branch
 ```
 
 **After merge, clean up the team immediately:**
