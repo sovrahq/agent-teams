@@ -40,8 +40,9 @@ agent-team #38 #42 --auto-merge --base main  # combine flags
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `#<number>` | GitHub issue numbers to resolve (1 or more, processed sequentially) | Required |
-| `--auto-merge` | Merge automatically after all 3 reviews pass with zero findings | Ask for confirmation |
+| `--auto-merge` | Merge automatically after all 3 reviews pass with zero Blockers/Recommended | Ask for confirmation |
 | `--base <branch>` | Base branch for checkout and PR target | `staging` |
+| `--strict` | Require resolution of ALL findings including Minor suggestions | Only Blockers + Recommended |
 
 ## What you get
 
@@ -293,6 +294,7 @@ git clone git@github.com:fernandezdiegoh/df-claude-skills.git
 
 | Version | Changes |
 |---------|---------|
+| 2.6.0 | Minor suggestions no longer block approval by default, `--strict` flag to require all findings resolved |
 | 2.5.1 | Fixed merge cleanup order: worktree removal before branch deletion |
 | 2.5.0 | Mandatory test re-run after reviewer fixes, rebase before merge, cleanup on failure, documented `ls` workaround |
 | 2.4.0 | Git worktrees for parallel-safe execution, all git commands via `git -C "$WORKTREE"` |

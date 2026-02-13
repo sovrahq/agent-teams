@@ -1,6 +1,6 @@
 ---
 name: agent-team
-version: 2.5.1
+version: 2.6.0
 ---
 
 # Agent Team Lead
@@ -11,9 +11,11 @@ You coordinate a team of agents to resolve GitHub issues.
 
 You receive one or more issue numbers as arguments (e.g., `#38` or `#38 #42 #15`). If none are provided, ask for them.
 
-**Optional parameter: `--auto-merge`** — If included (e.g., `#38 #42 --auto-merge`), merge automatically after all 3 reviews pass with zero findings, without asking for user confirmation. If NOT included, ask for confirmation before each merge (default behavior).
+**Optional parameter: `--auto-merge`** — If included (e.g., `#38 #42 --auto-merge`), merge automatically after all 3 reviews pass with zero Blockers and zero Recommended (or zero total if `--strict`), without asking for user confirmation. If NOT included, ask for confirmation before each merge (default behavior).
 
 **Optional parameter: `--base <branch>`** — Base branch for checkout and PR target. Defaults to `staging` if not provided.
+
+**Optional parameter: `--strict`** — If included, the coder must resolve ALL findings including Minor suggestions. By default, only Blockers and Recommended improvements must be resolved. Minor suggestions are reported in the summary but do not block approval.
 
 **Multiple issues are processed SEQUENTIALLY** — each issue goes through the full flow (branch → code → review → merge) before starting the next. After merging each issue, pull the base branch before starting the next one to always start from the latest base.
 
@@ -217,15 +219,15 @@ Do NOT print the report as text — ALWAYS use SendMessage so the team lead rece
 
 **IMPORTANT: The reviewer's findings arrive as a TEAMMATE MESSAGE (SendMessage), NOT as a PR comment. Read the message the reviewer sent you before continuing. NEVER assume "no findings" because you don't see comments in `gh pr view --comments`.**
 
-**RULE: The coder must resolve 100% of findings — blockers, recommended improvements, AND minor suggestions. The loop does NOT end until the reviewer approves with ZERO findings.**
+**RULE: The coder must resolve all Blockers and Recommended improvements. The loop does NOT end until the reviewer reports ZERO Blockers and ZERO Recommended. Minor suggestions are reported but do NOT block approval — UNLESS `--strict` was passed, in which case ALL findings (including Minor) must be resolved.**
 
 **RULE: Kill + Respawn.** After each review, **kill the reviewer** (shutdown_request) and spawn a new one for the next iteration. This avoids confirmation bias — each review is done with fresh eyes, without anchoring to previous findings.
 
 The loop is:
 1. Team lead reads the reviewer's message with findings.
 2. Team lead **kills the reviewer** (shutdown_request).
-3. Team lead sends the COMPLETE list of findings TO THE CODER via **SendMessage** (copy verbatim, do NOT write "see reviewer's message"). The coder does NOT have access to the reviewer's messages.
-4. Coder fixes EVERYTHING and **re-runs tests**. The coder must confirm tests pass before the team lead commits.
+3. Team lead sends Blockers and Recommended findings TO THE CODER via **SendMessage** (copy verbatim, do NOT write "see reviewer's message"). The coder does NOT have access to the reviewer's messages. If `--strict`, also include Minor suggestions.
+4. Coder fixes all forwarded findings and **re-runs tests**. The coder must confirm tests pass before the team lead commits.
 5. Team lead **verifies branch** (`git -C "$WORKTREE" branch --show-current` must be `$BRANCH`), then makes a new commit and push from `$WORKTREE`.
 6. Team lead **spawns a NEW reviewer** and sends:
    ```
@@ -246,8 +248,8 @@ The loop is:
    SendMessage(type="message", recipient="team-lead", content="<your full report>", summary="Review findings PR #X")
    Do NOT print the report as text — ALWAYS use SendMessage.
    ```
-7. If the new reviewer finds issues → go back to 1.
-8. **Only when a reviewer approves with 0 findings** → kill them (shutdown_request) and move to step 7.
+7. If the new reviewer finds Blockers or Recommended → go back to 1. (If `--strict`, Minor also triggers a new iteration.)
+8. **Only when a reviewer reports 0 Blockers and 0 Recommended** (or 0 total findings if `--strict`) → kill them (shutdown_request) and move to step 7.
 
 **If the loop exceeds 5 iterations, ask the user whether to continue or hand off to human review.**
 

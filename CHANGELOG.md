@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 2.6.0
+
+- By default, only Blockers and Recommended improvements must be resolved. Minor suggestions are reported but do not block approval.
+- Added `--strict` flag: when passed, all findings including Minor suggestions must be resolved (previous default behavior)
+- Review loop exit condition updated: 0 Blockers + 0 Recommended (or 0 total if `--strict`)
+
 ## 2.5.1
 
 - Fixed merge cleanup order: remove worktree BEFORE `gh pr merge --delete-branch` (branch deletion fails while worktree exists)
