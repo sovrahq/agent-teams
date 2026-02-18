@@ -295,6 +295,7 @@ git clone git@github.com:fernandezdiegoh/df-claude-skills.git
 
 | Version | Changes |
 |---------|---------|
+| 2.6.4 | Coder installs dependencies as first step — worktrees are fresh checkouts without `node_modules`/venvs |
 | 2.6.3 | Worktrees now created inside the project repo at `docs/agent-teams/issue-<N>` instead of sibling directory |
 | 2.6.2 | Auto-close GitHub issues after merge with PR reference comment |
 | 2.6.1 | Fixed reviewer worktree access: reviewers receive `$WORKTREE` path to read files instead of attempting `git checkout` |

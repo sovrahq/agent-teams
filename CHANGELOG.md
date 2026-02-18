@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 2.6.4
+
+- Coder must install dependencies as first step (Step 0) — worktrees are fresh checkouts without `node_modules`, venvs, or other non-tracked dependencies
+- Added dependency installation reminder to coder RULES block
+
 ## 2.6.3
 
 - Moved worktree location from `../issue-<number>` (sibling directory) to `docs/agent-teams/issue-<number>` (inside the target project repo)

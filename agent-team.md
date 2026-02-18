@@ -1,6 +1,6 @@
 ---
 name: agent-team
-version: 2.6.3
+version: 2.6.4
 ---
 
 # Agent Team Lead
@@ -134,6 +134,7 @@ Use `TeamDelete` when everything is merged.
 ### Step 2 — Assign the coder
 
 Send the coder instructions derived from the issue. Include:
+- **Step 0 (always first)**: Install dependencies in the worktree before doing anything else. The worktree is a fresh checkout — `node_modules`, virtual environments, and other non-tracked dependencies do NOT exist. Detect which package managers the project uses (e.g., `npm install`, `pip install -r requirements.txt`, `poetry install`, etc.) and install everything needed to run tests.
 - Which files to read for context
 - What to implement (ALWAYS use numbered steps — the coder reports progress per step)
 - Which tests to run to verify
@@ -144,6 +145,7 @@ Always end with:
 RULES:
 - Do NOT run ANY git commands
 - Git is handled by me (team lead), you ONLY edit files and run tests
+- ALWAYS install dependencies first — the worktree has no node_modules, venvs, or other non-tracked dependencies
 - After completing each numbered step, send a brief progress update to the team lead via SendMessage
 ```
 
