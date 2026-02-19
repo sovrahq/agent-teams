@@ -242,10 +242,10 @@ Add this section to your project's `CLAUDE.md`:
 - Check for edge cases in error handling at system boundaries
 
 ### skills
-| Scope | Skill | When to inject |
-|-------|-------|----------------|
-| frontend | /frontend-design | Issue involves UI components, pages, styling, or layout |
-| backend | /api-design-principles | Issue involves API endpoints, data models, or services |
+| Scope | Path | When to inject |
+|-------|------|----------------|
+| frontend | .agents/skills/frontend-design/SKILL.md | Issue involves UI components, pages, styling, or layout |
+| backend | .agents/skills/api-design-principles/SKILL.md | Issue involves API endpoints, data models, or services |
 ```
 
 ### How it works
@@ -254,7 +254,7 @@ Add this section to your project's `CLAUDE.md`:
 2. If `## Agent Team` exists, it extracts each subsection
 3. `### all` rules are appended to **every** teammate's prompt
 4. `### <role>` rules are appended to the **corresponding** teammate's prompt
-5. `### skills` — team lead detects issue scope and injects matching skills into the coder's prompt
+5. `### skills` — team lead detects issue scope, reads matching skill files, and injects their guidelines into the coder's prompt
 6. If the section doesn't exist, no project-specific rules apply — the flow works without it
 
 ### Supported roles
@@ -306,7 +306,8 @@ git clone git@github.com:fernandezdiegoh/df-claude-skills.git
 
 | Version | Changes |
 |---------|---------|
-| 2.8.0 | Conditional skill injection — team lead detects issue scope and injects matching skills (e.g., `/frontend-design`) from `CLAUDE.md` `### skills` mapping |
+| 2.8.1 | Skill injection uses file paths — team lead reads skill files and injects guidelines directly, no dependency on skill installation |
+| 2.8.0 | Conditional skill injection — team lead detects issue scope and injects matching skills from `CLAUDE.md` `### skills` mapping |
 | 2.7.0 | Step 0.5 — cleanup stale worktrees/branches before each issue (global prune + issue-specific removal, parallel-safe) |
 | 2.6.5 | Reverted worktrees to sibling directory `../issue-<N>` — nesting inside repo caused tooling (npm, pytest) to hang |
 | 2.6.4 | Coder installs dependencies as first step — worktrees are fresh checkouts without `node_modules`/venvs |

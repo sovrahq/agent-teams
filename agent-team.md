@@ -1,6 +1,6 @@
 ---
 name: agent-team
-version: 2.8.0
+version: 2.8.1
 ---
 
 # Agent Team Lead
@@ -29,9 +29,9 @@ You receive one or more issue numbers as arguments (e.g., `#38` or `#38 #42 #15`
    - **Review criteria**: what the reviewer should verify based on the type of change in the issue
 4. **Detect scope and inject skills** — Classify the issue scope (e.g., `frontend`, `backend`, `infra`). If the project's `CLAUDE.md` defines a `### skills` subsection under `## Agent Team` (see [Project-specific rules](#project-specific-rules)), include the matching skills in the coder's prompt:
    ```
-   For all UI work in this issue, invoke /frontend-design before implementing any components.
+   Before implementing any UI components, read <path-to-skill>/SKILL.md and follow its guidelines.
    ```
-   Only include skills that match the detected scope. If no `### skills` section exists or no scope matches, skip — no skills are injected.
+   The team lead reads the skill file itself and includes the key guidelines in the coder's prompt. This ensures the coder has the context even if the skill is not installed in the project. Only include skills that match the detected scope. If no `### skills` section exists or no scope matches, skip — no skills are injected.
 
 ## Your role: Team Lead
 
@@ -460,13 +460,13 @@ Read the `## Agent Team` section in the project's `CLAUDE.md`. If it exists, it 
 
 ```markdown
 ### skills
-| Scope | Skill | When to inject |
-|-------|-------|----------------|
-| frontend | /frontend-design | Issue involves UI components, pages, styling, or layout |
-| backend | /api-design-principles | Issue involves API endpoints, data models, or services |
+| Scope | Path | When to inject |
+|-------|------|----------------|
+| frontend | .agents/skills/frontend-design/SKILL.md | Issue involves UI components, pages, styling, or layout |
+| backend | .agents/skills/api-design-principles/SKILL.md | Issue involves API endpoints, data models, or services |
 ```
 
-When the team lead classifies the issue scope (Setup step 4), it looks up matching rows and adds to the coder's instructions: `"Before implementing, invoke /<skill> and follow its guidelines for all <scope> work."` Multiple scopes can match a single issue (e.g., a full-stack feature injects both `/frontend-design` and `/api-design-principles`).
+When the team lead classifies the issue scope (Setup step 4), it reads the skill file at the declared path, extracts the key guidelines, and includes them in the coder's instructions. This way the coder receives the guidelines directly — no dependency on the skill being installed or invocable. Multiple scopes can match a single issue (e.g., a full-stack feature injects guidelines from both frontend and backend skills). If a skill file does not exist at the declared path, warn the user and skip that skill.
 
 If the `## Agent Team` section does not exist in `CLAUDE.md`, skip — no project-specific rules apply.
 

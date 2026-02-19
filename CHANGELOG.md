@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 2.8.1
+
+- Skill injection now uses file paths instead of skill invocation — team lead reads the skill file and includes guidelines in the coder's prompt directly
+- `### skills` table now declares `Path` column instead of `Skill` (e.g., `.agents/skills/frontend-design/SKILL.md`)
+- If a skill file does not exist at the declared path, the team lead warns the user and skips it
+- Eliminates dependency on skills being installed or invocable in the target project
+
 ## 2.8.0
 
 - Added conditional skill injection based on issue scope detection
